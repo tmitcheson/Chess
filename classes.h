@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <vector>
+// #include "Piece.h"
 
 int const MAX_FILE = 8;
 int const MAX_RANK = 8;
@@ -23,13 +25,14 @@ ostream &operator<<(ostream& o, PieceType type);
 void converter(const char* position, int& rank, int& file);
 string convertBack(int rank, int file);
 
+
+/* SPACE FOR ALL THE DERIVED PIECES */
+
 class Piece{
   protected:
   Colour colour = White;
   PieceType type;
   bool movedYet;
-  int file, rank;
-  // string location ?
   
 public:
 
@@ -46,11 +49,7 @@ public:
                             int sourceRank,
                             int sourceFile, 
                             int destRank,
-                            int destFile) = 0;
-  void printObstructionError(Piece* square[][MAX_FILE],
-                            int sR, int sF,
-                            int dR, int dF,
-                            int bR, int bF);
+                            int destFile, PieceType& flag) = 0;
   bool hasHorizontalObstruction(Piece* square[][MAX_FILE],
                               int sR, int sF,
                               int dR, int dF);
@@ -63,47 +62,50 @@ public:
 
   bool isBlack();
 
-
-  // virtual bool isLegalMove();
-
 };
 
-/* SPACE FOR ALL THE DERIVED PIECES */
 
 class King : public Piece {
   public:
   King();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
 };
 
 class Queen : public Piece {
   public:
   Queen();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
 };
 
 class Knight : public Piece {
   public:
   Knight();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
 };
 
 class Bishop : public Piece {
   public:
   Bishop();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
 };
 
 class Rook : public Piece {
   public:
   Rook();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
 };
 
 class Pawn : public Piece {
   public:
   Pawn();
-  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) override;
+  bool isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+                  int dF, PieceType& flag) override;
+  void moveConfirmed(bool movedYet);
 };
 
 /* PIECES SECTION FINISHED */
@@ -115,9 +117,15 @@ class Game {
   void toggleTurn();
   Colour getTurn(); 
   void resetTurn();
-  bool inCheck();
-  bool inCheckmate();
+  bool isGameOver(Piece* square[][MAX_FILE]);
+  bool InCheck(Piece* square[][MAX_FILE]);
+  void identifyOwnKing(Piece* square[][MAX_FILE], int& kR, int& kF);
+  bool inCheckmate(Piece* square[][MAX_FILE]);
+  bool isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF);
   bool inStatemate();
+  void makeTempMove(Piece* square[][MAX_FILE], Piece*& temp, int sR, int sF, int dR, int dF);
+  void undoTempMove(Piece* square[][MAX_FILE], Piece*& temp, int sR, int sF, int dR, int dF);
+  void makeMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF);
 };
 
 
@@ -143,8 +151,10 @@ public:
   void submitMove(const char* source, const char* dest);
   void resetBoard();
   bool hasPiece(int rank, int file);
+  void printMoveToMake(int sourceRank, int sourceFile, int destRank, int destFile);
   void makeMove(int sourceRank, int sourceFile, int destRank, int destFile);
-  
+  bool isInCheck(Piece* square[][MAX_FILE]);
+  void identifyOppositionKing(Piece* square[][MAX_FILE], int& kR, int& kF);
 
 };
 

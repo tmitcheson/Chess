@@ -1,4 +1,4 @@
-chess: ChessMain.o classes.o ChessBoard.o Game.o
+chess: ChessMain.o classes.o ChessBoard.o Game.o 
 	g++ -g ChessMain.o classes.o ChessBoard.o Game.o -o chess
 
 ChessMain.o: ChessMain.cpp classes.h

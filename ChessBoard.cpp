@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <vector>
 #include "classes.h"
 
 using namespace std;
@@ -70,7 +71,7 @@ bool ChessBoard::hasPiece(int rank, int file){
   else return false;
 }
 
-void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
+void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
   string outputSource = convertBack(sR, sF);
   string outputDest = convertBack(dR, dF);
   cout << square[sR][sF]->getColour() << "'s " << square[sR][sF]->getType()
@@ -81,11 +82,12 @@ void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
          << square[dR][dF]->getType() << endl;
   }
   else cout << endl;
+}
+
+void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
   
-
-
 }
 
 
@@ -102,21 +104,52 @@ void ChessBoard::submitMove(const char* source, const char* dest){
     return;
   }
 
-  // check if it is the correct colour's turn
+    // check if it is the correct colour's turn
   if(! (square[sourceRank][sourceFile]->getColour() == game.getTurn())){
     cerr << "It is not " << square[sourceRank][sourceFile]->getColour()
          << "'s turn to move. " << endl;
          return;
   }
 
-  // check for whether that move is legal for that piece
+  
+
+  PieceType flag;
+  // check for whether that move is legal for that piece and if not
+  // output error statement before returning
   if( ! (square[sourceRank][sourceFile]->isValidMove(square, sourceRank, 
-            sourceFile, destRank, destFile))){
+            sourceFile, destRank, destFile, flag))){
+      string destOutput = convertBack(destRank, destFile);
+      string sourceOutput = convertBack(sourceRank, sourceFile);
+      cout << square[sourceRank][sourceFile]->getColour() << "'s ";
+      switch(flag){
+        case king:
+          cout << king; break;
+        case queen:
+          cout << queen; break;
+        case rook:
+          cout << rook; break;
+        case knight:
+          cout << knight; break;
+        case bishop:
+          cout << bishop; break;
+        case pawn:
+          cout << pawn; break;
+      }
+      cout << " at " << sourceOutput[0] << sourceOutput[1] 
+      << " cannot move to " << destOutput[0] << destOutput[1] << endl;
       return;
   }
- 
+
+
+  // after its validity is checked, the move can be made
+  printMoveToMake(sourceRank, sourceFile, destRank, destFile);
   makeMove(sourceRank, sourceFile, destRank, destFile);
+ 
   game.toggleTurn();
+
+  if(game.isGameOver(square)){
+    return;
+  }
 
 }
 

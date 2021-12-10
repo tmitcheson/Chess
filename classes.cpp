@@ -33,8 +33,6 @@ ostream &operator<<(ostream& o, PieceType type){
   return o << stringType[type];
 }
 
-// PIECE FUNCTIONS //
-
 Piece::Piece(){};
 
 void Piece::setBlack(){
@@ -57,10 +55,10 @@ bool Piece::isFriendlyFire(Piece* square[][MAX_FILE], int sourceRank,
       if(square[sourceRank][sourceFile]->getColour()
               == square[destRank][destFile]->getColour()){
                 // we have a problem, so error message and return true...
-        string output = convertBack(destRank, destFile);
-        cerr << square[sourceRank][sourceFile]->getColour() << "'s "
-              << square[sourceRank][sourceFile]->getType()
-              << " cannot attack own colour piece at " << output << endl;
+        //string output = convertBack(destRank, destFile);
+        //cerr << square[sourceRank][sourceFile]->getColour() << "'s "
+        //      << square[sourceRank][sourceFile]->getType()
+        //      << " cannot attack own colour piece at " << output[0] << output[1] << endl;
         return true;
       }
       else return false;
@@ -68,30 +66,13 @@ bool Piece::isFriendlyFire(Piece* square[][MAX_FILE], int sourceRank,
     return false;
 }
 
-void Piece::printObstructionError(Piece* square[][MAX_FILE],
-  int sR, int sF,
-  int dR, int dF,
-  int bR, int bF){
-    // bR and bF here standing for blockingRank and blockingFile
-      string sourceOutput = convertBack(sR, dR);
-      string blockOutput = convertBack(bR, bF);
-      string destOutput = convertBack(dR, dF);
-      cerr << square[sR][sF]->getColour() << "'s "
-      << square[sR][sF]->getType() << " at square " << sourceOutput[0] 
-      << sourceOutput[1] << " is blocked from moving to "
-      << destOutput[0] << destOutput[1] << " by " << square[bR][bF]->getColour()
-      << "'s " << square[bR][bF]->getType() << " at square " 
-      << blockOutput[0] << blockOutput[1] << endl;
-      return;
-  }
-
 bool Piece::hasHorizontalObstruction(Piece* square[][MAX_FILE],
   int sR, int dR,
   int sF, int dF){
     if(sF < dF){
       for(int i = sF+1; i < dF; i++){
         if(square[sR][i] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, sR, i);
+          // printObstructionError(square, sR, sF, dR, dF, sR, i);
           return true;
         }
       }
@@ -99,7 +80,7 @@ bool Piece::hasHorizontalObstruction(Piece* square[][MAX_FILE],
     if(dF < sF){
       for(int i = sF-1; i > dF; i--){
         if(square[sR][i] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, sR, i);
+          // printObstructionError(square, sR, sF, dR, dF, sR, i);
           return true;
         }
       }
@@ -113,7 +94,7 @@ bool Piece::hasVerticalObstruction(Piece* square[][MAX_FILE],
     if(sR < dR){
       for(int i = sR+1; i < dR; i++){
         if(square[i][sF] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, sF);
+          // printObstructionError(square, sR, sF, dR, dF, i, sF);
           return true;
         }
       }
@@ -121,7 +102,7 @@ bool Piece::hasVerticalObstruction(Piece* square[][MAX_FILE],
     if(dR < sR){
       for(int i = sR-1; i > dR; i--){
         if(square[i][dF] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, dF);
+          // printObstructionError(square, sR, sF, dR, dF, i, dF);
           return true;
         }
       }
@@ -135,7 +116,7 @@ bool Piece::hasDiagonalObstruction(Piece* square[][MAX_FILE],
     if((sR < dR) && (sF < dF)){
       for(int i = sR+1, j = sF+1; i < dR && j < dF; i++, j++){
         if(square[i][j] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, j);
+          // printObstructionError(square, sR, sF, dR, dF, i, j);
           return true;
         }
       }
@@ -143,7 +124,7 @@ bool Piece::hasDiagonalObstruction(Piece* square[][MAX_FILE],
     else if((sR > dR) && (sF < dF)){
       for(int i = sR-1, j = sF+1; i > dR && j < dF; i--, j++){
         if(square[i][j] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, j);
+          // printObstructionError(square, sR, sF, dR, dF, i, j);
           return true;
         }
       }
@@ -151,7 +132,7 @@ bool Piece::hasDiagonalObstruction(Piece* square[][MAX_FILE],
     else if ((sR < dR) && (sF > dF)){
       for(int i = sR+1, j = sF-1; i < dR && j > dF; i++, j--){
         if(square[i][j] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, j);
+          // printObstructionError(square, sR, sF, dR, dF, i, j);
           return true;
         }
       } 
@@ -159,7 +140,7 @@ bool Piece::hasDiagonalObstruction(Piece* square[][MAX_FILE],
     else if ((sR > dR) && (sF > dF)){
       for(int i = sR-1, j = sF-1; i > dR && j > dF; i--, j--){
         if(square[i][j] != nullptr){
-          printObstructionError(square, sR, sF, dR, dF, i, j);
+          // printObstructionError(square, sR, sF, dR, dF, i, j);
           return true;
         }
       }
@@ -172,27 +153,30 @@ bool Piece::isBlack(){
   bool returner = (this->colour == Black) ? true : false;
   return returner;
 }
-  
+
+
 
 // KING 
+
+
 
 King::King()
   : Piece(){
     type = king;
   };
 
-bool King::isValidMove (Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF) {
+bool King::isValidMove (Piece* square[][MAX_FILE], int sR, int sF, int dR,
+  int dF, PieceType& flag) {
 
   // check if it is a logically valid move for a king
   if( ! ((abs(dR - sR) <= 1) && (abs(dF - sF) <= 1))){
-    string output = convertBack(dR, dF);
-    cerr << this->colour << "'s king cannot move to " << output[0] << output[1] 
-    << endl;
+    flag = king;
     return false;
   }
 
   // no obstruction checks necessary
   if(isFriendlyFire(square, sR, sF, dR, dF) == true){
+    flag = king;
     return false;
   }
 
@@ -208,31 +192,35 @@ Queen::Queen()
     type = queen;
   };
 
-bool Queen::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+bool Queen::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR,
+   int dF, PieceType& flag){
+
   if( ! ( ( sR == dR) || (sF == dF) || (abs(dR - sR) == abs(dF - sF)))){
-    string output = convertBack(dR, dF);
-    cerr << this->colour << "'s queen cannot move to " << output[0] << output[1]
-    << endl;
+    flag = queen;
     return false;
   }
 
   if(sR == dR){
     if(hasHorizontalObstruction(square, sR, sF, dR, dF)){
+      flag = queen;
       return false;
     }
   }
   if(sF == dF){
     if(hasVerticalObstruction(square, sR, sF, dR, dF)){
+      flag = queen;
       return false;
     }
   }
   if(abs((dR - sR) == abs(dF - sF))){
     if(hasDiagonalObstruction(square, sR, sF, dR, dF)){
+      flag = queen;
      return false;
     }
   }
   
   if(isFriendlyFire(square, sR, sF, dR, dF) == true){
+    flag = queen;
     return false;
   }
   return true;
@@ -245,19 +233,19 @@ Knight::Knight()
     type = knight;
   };
 
-bool Knight::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+bool Knight::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+    int dF, PieceType& flag){
   
   // check if logically valid move for knight
   if( ! (((abs(dR - sR) == 2) && (abs(dF - sF) == 1)) 
       || ((abs(dR - sR) == 1) && (abs(dF - sF) == 2)))){
-        string output = convertBack(dR, dF);
-        cerr << this->colour << "'s knight cannot move to " << output[0] 
-        << output[1] << endl;
+        flag = knight;
         return false;
   }
 
   // no need to check for obstruction since knight can jump
   if(isFriendlyFire(square, sR, sF, dR, dF) == true){
+    flag = knight;
     return false;
   }
 
@@ -274,22 +262,23 @@ Bishop::Bishop()
     type = bishop;
   };
 
-bool Bishop::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+bool Bishop::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+    int dF, PieceType& flag){
   
   // logic for whether bishop is making a valid move
   if( abs(dR - sR) != abs(dF - sF)){
-    string output = convertBack(dR, dF);
-    cerr << this->colour << "'s bishop cannot move to " << output[0] 
-    << output[1] << endl;
+    flag = bishop;
     return false;
   }
 
   // checking for obstructions between source and destination
   if(hasDiagonalObstruction(square, sR, sF, dR, dF) == true){
+    flag = bishop;
     return false;
   }
   
   if(isFriendlyFire(square, sR, sF, dR, dF) == true){
+    flag = bishop;
     return false;
   }
 
@@ -303,30 +292,32 @@ Rook::Rook()
     type = rook;
   };
 
-bool Rook::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+bool Rook::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+    int dF, PieceType& flag){
 
   // check if movge is logically valid for a rook piece
   if( ! (sR == dR || sF == dF)){
-    string output = convertBack(dR, dF);
-    cerr << this-colour << "'s rook cannot move to " << output[0] << output[1]
-      << endl;
+    flag = rook;
     return false;
   }
 
   // check for obstructions between source and destination
   if(sR == dR){
     if(hasHorizontalObstruction(square, sR, sF, dR, dF)){
+      flag = rook;
       return false;
     }
   }
   else if (sF == dF){
     if(hasVerticalObstruction(square, sR, sF, dR, dF)){
+      flag = rook;
       return false;
     }
   }
 
   // check if destination square has same colour piece as source
   if(isFriendlyFire(square, sR, sF, dR, dF) == true){
+    flag = rook;
     return false;
   }
 
@@ -342,48 +333,102 @@ Pawn::Pawn()
     movedYet = false;
   };
 
-bool Pawn::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+void Pawn::moveConfirmed(bool movedYet){
+  movedYet = (movedYet == false)? true: true;
+}
+/*
+bool Pawn::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+    int dF, PieceType& flag){
+  
+  int destRank = dR;
+  int destFile = dF;
 
-  if((dR - sR) > 2 || abs(dF - sF) > 1){
-    cerr << "Illegal pawn move" << endl;
+  if(square[sR][sF]->getColour() == White){
+    int tempR = sR;
+    sR = dR;
+    dR = tempR;
+    int tempF = sF;
+    sF = dF;
+    dF = tempF;
+  }
+
+  if((dR - sR) > 2 || abs(dF - sF) > 1 || (dR - sR) == 0){
+    flag = pawn;
     return false;
   }
+
   if((dR - sR) == 2 && movedYet == true){
-    cerr << "Pawn can only move forward two on first go. " << endl;
+    flag = pawn;
     return false;
   }
-  // if pawn is trying to move two forward on it's first go conditions
+  // if 'pawn is trying to move two forward on its first go' conditions
   if((dR - sR) == 2){
     if( abs(dF - sF) == 1){
-      cerr << "Pawn cannot move two up one to the side. Invalid Move. " << endl;
+      flag = pawn;
       return false;
     }
-    if(square[dR][dF] != nullptr){
-      cerr << "Occupied space, pawn cannot move there. " << endl;
+    if(square[destRank][destFile] != nullptr){
+      flag = pawn;
       return false;
     }
   }
   // if pawn is trying to move one forward conditions
   if((dR - sR) == 1){
     if(sF == dF){
-      if(square[dR][dF] != nullptr){
-        cerr << "Occupied space, pawn cannot move there. " << endl;
+      if(square[destRank][destFile] != nullptr){
+        flag = pawn;
         return false;
       }
     }
     if(abs(sF - dF) == 1){
-      if(square[dR][dF] == nullptr){
-        cerr << "Pawn cannot move diagonally with no piece to take. " << endl;
+      if(square[destRank][destFile] == nullptr){
+        flag = pawn;
         return false;
       }
-      if(square[dR][dF]->getColour() == this->colour){
-        cerr << "Pawn cannot attack own team. " << endl;
+      if(square[destRank][destFile]->getColour() == this->colour){
+        flag = pawn;
         return false;
       }
     }
   }
+  moveConfirmed();
   return true;
-}
+} */
 
+bool Pawn::isValidMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, 
+    int dF, PieceType& flag){
+
+    int destRank = dR;
+    int destFile = dF;
+
+    if(square[sR][sF]->getColour() == White){
+      int tempR = sR;
+      sR = dR;
+      dR = tempR;
+      int tempF = sF;
+      sF = dF;
+      dF = tempF;
+    }
+
+    if(dR - sR == 1){ 
+      if(dF - sF == 0 && square[destRank][destFile] == nullptr){
+        this->moveConfirmed(movedYet);
+        return true;
+      }
+      else if(abs(dF - sF) == 1 && square[destRank][destFile] != nullptr){
+        this->moveConfirmed(movedYet);
+        return true;
+      } 
+    }
+    
+    if(dR - sR == 2 && movedYet == false){
+      if(dF - sF == 0){
+        this->moveConfirmed(movedYet);
+        return true;
+      }
+    }
+    flag = pawn;
+    return false;
+    }
 // BOARD FUNCTIONS //
 
