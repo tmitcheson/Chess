@@ -172,13 +172,13 @@ bool Game::isInCheckmate(Piece* square[][MAX_FILE]){
 bool Game::isGameOver(Piece* square[][MAX_FILE]){
     if(isInCheck(square)){
         if(isInCheckmate(square)){
-          cout << getTurn() << " is in checkmate." << endl;
+          cout << getTurn() << " is in checkmate" << endl;
           return true;
         }
-        cout << getTurn() << " is in check." << endl;
+        cout << getTurn() << " is in check" << endl;
     }
     if(isInStalemate(square)){
-      cout << getTurn() << " is in stalemate. " << endl;
+      cout << getTurn() << " is in stalemate " << endl;
       return true;
     }
 

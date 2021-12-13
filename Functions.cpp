@@ -45,8 +45,8 @@ ostream &operator<<(ostream& o, Colour colour){
 }
 
 ostream &operator<<(ostream& o, PieceType type){
-  const string stringType[] = { "king", "queen", "rook",
-                                "knight", "bishop", "pawn" };
+  const string stringType[] = { "King", "Queen", "Rook",
+                                "Knight", "Bishop", "Pawn" };
   return o << stringType[type];
 }
 
