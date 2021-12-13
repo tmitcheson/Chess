@@ -1,7 +1,16 @@
 #include <iostream>
 #include <string>
 #include <cstring>
-#include "classes.h"
+#include "Functions.h"
+#include "Piece.h"
+#include "ChessBoard.h"
+#include "Game.h"
+#include "Bishop.h"
+#include "King.h"
+#include "Knight.h"
+#include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
 
 using namespace std;
 
@@ -17,25 +26,28 @@ void Game::resetTurn(){
     turn = White;
 }
 
-void Game::makeMove(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+void Game::makeMove(Piece* square[][MAX_FILE], int const sR, int const sF, 
+                                               int const dR, int const dF){
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
-  
 }
 
-void Game::makeTempMove(Piece* square[][MAX_FILE], Piece*& temp, int sR, int sF, int dR, int dF){
+void Game::makeTempMove(Piece* square[][MAX_FILE], Piece*& temp, int const sR, 
+                        int const sF, int const dR, int const dF){
   temp = square[dR][dF];
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
 }
 
-void Game::undoTempMove(Piece* square[][MAX_FILE], Piece*& temp, int sR, int sF, int dR, int dF){
+void Game::undoTempMove(Piece* square[][MAX_FILE], Piece*& temp, int const sR, 
+                        int const sF, int const dR, int const dF){
   square[sR][sF] = square[dR][dF];
   square[dR][dF] = temp;
   temp = nullptr;
 }
 
-void Game::identifyOwnKing(Piece* square[][MAX_FILE], int& kR,
+// kR and kF stand for kingRank and kingFile respectively
+void Game::identifyOwnKing(Piece* const square[][MAX_FILE], int& kR,
   int& kF){
   for(kR = 0; kR < MAX_RANK; kR++){
     for(kF = 0; kF < MAX_FILE; kF++){
@@ -50,10 +62,14 @@ void Game::identifyOwnKing(Piece* square[][MAX_FILE], int& kR,
   }
 }
 
-bool Game::InCheck(Piece* square[][MAX_FILE]){
-    // identify opposition king
+
+bool Game::isInCheck(Piece* square[][MAX_FILE]) {
+  // identify own king
   int kR, kF;
   identifyOwnKing(square, kR, kF);
+  // algorithm requires iterating through all of possible moves for opposition
+  // and seeing if any of them are able to legally reach our king. Hence we 
+  // temporarily toggle turn to hypothetically run through moves
   toggleTurn();
   // for every square
   for(int i = 0; i < MAX_RANK; i++){
@@ -76,12 +92,13 @@ bool Game::InCheck(Piece* square[][MAX_FILE]){
   return false;
 }
 
-bool Game::isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF, int dR, int dF){
+
+bool Game::isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF,
+                                                     int dR, int dF){
   Piece* temp = nullptr;
   makeTempMove(square, temp, sR, sF, dR, dF);
-  if(! (InCheck(square))){
+  if(! (isInCheck(square))){
     undoTempMove(square, temp, sR, sF, dR, dF);
-    
     return false;   
   }
   // if the king is still in check after the move
@@ -89,7 +106,41 @@ bool Game::isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF, int dR, int
   return true;
 }
 
-bool Game::inCheckmate(Piece* square[][MAX_FILE]){
+
+bool Game::isInStalemate(Piece* square[][MAX_FILE]){
+  // for every move
+  for(int i = 0; i < MAX_RANK; i++){
+    for(int j = 0; j < MAX_FILE; j++){
+      for(int m = 0; m < MAX_RANK; m++){
+        for(int n = 0; n < MAX_FILE; n++){
+          // which has a piece of our turn's colour
+          if(square[m][n] != nullptr){
+            if(square[m][n]->getColour() == turn){
+              PieceType flag;
+              // if that piece has a valid move to make...
+              if(square[m][n]->isValidMove(square, m, n, i, j, flag)){
+                Piece* temp = nullptr;
+                makeTempMove(square, temp, m, n, i, j);
+                // which doesn't put ourselves in check
+                if(!isInCheck(square)){
+                  // then we are not in a stalemate
+                  undoTempMove(square, temp, m, n, i, j);
+                  return false;
+                }
+                undoTempMove(square, temp, m, n, i, j); 
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  // else if we have exhausted every eventuality without success we are 
+  // in stalemate
+  return true;
+}
+
+bool Game::isInCheckmate(Piece* square[][MAX_FILE]){
     int kR, kF;
     identifyOwnKing(square, kR, kF);
     // for any given move the checked side can make...
@@ -119,26 +170,18 @@ bool Game::inCheckmate(Piece* square[][MAX_FILE]){
 }
 
 bool Game::isGameOver(Piece* square[][MAX_FILE]){
-    if(InCheck(square)){
-        if(inCheckmate(square)){
+    if(isInCheck(square)){
+        if(isInCheckmate(square)){
           cout << getTurn() << " is in checkmate." << endl;
           return true;
         }
         cout << getTurn() << " is in check." << endl;
     }
-
-
-    // if there are no valid moves then checkmate
-    /*if(inCheckmate(square)){
-      toggleTurn();
-      cout << getTurn() << " is in checkmate." << endl;
-      toggleTurn();
+    if(isInStalemate(square)){
+      cout << getTurn() << " is in stalemate. " << endl;
+      return true;
     }
-  }
 
-  // if there are no valid moves then stalemate
-
-    */
-   return false;
+  return false;
 }
 

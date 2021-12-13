@@ -2,7 +2,16 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include "classes.h"
+#include "Piece.h"
+#include "ChessBoard.h"
+#include "Functions.h"
+#include "Bishop.h"
+#include "King.h"
+#include "Knight.h"
+#include "Pawn.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Game.h"
 
 using namespace std;
 
@@ -13,6 +22,8 @@ ChessBoard::ChessBoard()
   resetBoard();
 }
 
+// function for resetting the board. Points the pointers back to
+// chess starting positions
 void ChessBoard::resetBoard(){
 
   game.resetTurn();
@@ -71,6 +82,7 @@ bool ChessBoard::hasPiece(int rank, int file){
   else return false;
 }
 
+
 void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
   string outputSource = convertBack(sR, sF);
   string outputDest = convertBack(dR, dF);
@@ -84,6 +96,7 @@ void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
   else cout << endl;
 }
 
+
 void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
@@ -94,9 +107,16 @@ void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
 void ChessBoard::submitMove(const char* source, const char* dest){
   int sourceRank, sourceFile, destRank, destFile;
 
+
   // converts coordinates from chess notation into array indices
   converter(source, sourceRank, sourceFile);
   converter(dest, destRank, destFile);
+
+  
+  if(! (isValidInput(sourceRank, sourceFile, destRank, destFile))){
+    cout << "Invalid input error. " << endl;
+    return;
+  }
 
   // check for if there is a piece on that square
   if(!hasPiece(sourceRank, sourceFile)){
@@ -104,14 +124,12 @@ void ChessBoard::submitMove(const char* source, const char* dest){
     return;
   }
 
-    // check if it is the correct colour's turn
+  // check if it is the correct colour's turn to move
   if(! (square[sourceRank][sourceFile]->getColour() == game.getTurn())){
     cerr << "It is not " << square[sourceRank][sourceFile]->getColour()
          << "'s turn to move. " << endl;
          return;
   }
-
-  
 
   PieceType flag;
   // check for whether that move is legal for that piece and if not
@@ -140,21 +158,30 @@ void ChessBoard::submitMove(const char* source, const char* dest){
       return;
   }
 
+  // Check that move doesn't put self in check
+  Piece* temp = nullptr;
+  game.makeTempMove(square, temp, sourceRank, sourceFile, destRank, destFile);
+  // isInCheck function checks for if moving player is in check
+  if(game.isInCheck(square)){
+    cout << "Illegal move. Player cannot put self in check." << endl;
+    return;
+  }
+  game.undoTempMove(square, temp, sourceRank, sourceFile, destRank, destFile);
+  
+
 
   // after its validity is checked, the move can be made
   printMoveToMake(sourceRank, sourceFile, destRank, destFile);
   makeMove(sourceRank, sourceFile, destRank, destFile);
  
+  // after move the turn is over
   game.toggleTurn();
 
   if(game.isGameOver(square)){
-    return;
+    cout << "Game Over!" << endl;
   }
 
 }
-
-  // check that that move does not render the mover in check
-  // if it has taken an opposition move, then we delete that piece
 
 
 
