@@ -178,7 +178,7 @@ void ChessBoard::submitMove(const char* source, const char* dest){
   game.toggleTurn();
 
   if(game.isGameOver(square)){
-    cout << "Game Over!" << endl;
+    return;
   }
 
 }
