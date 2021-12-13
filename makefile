@@ -6,7 +6,7 @@ CC	 = g++
 FLAGS	 = -g -c -Wall
 LFLAGS	 = 
 
-all: $(OBJS)
+chess: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
 Bishop.o: Bishop.cpp
