@@ -6,6 +6,12 @@
 
 using namespace std;
 
+// abstract class with a pure virtual function isValidMove()
+
+// many functions make use of the notation sR, sF, dR, dF which stand for
+// source piece rank, source piece file, destination piece rank, and
+// destination piece file respectively
+
 class Piece{
   protected:
   Colour colour = White;

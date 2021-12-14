@@ -31,8 +31,6 @@ class Game {
                      int const sF, int const dR, int const dF);
   void undoTempMove(Piece* square[][MAX_FILE], Piece*& temp, int const sR, 
                      int const sF, int const dR, int const dF);
-  void makeMove(Piece* square[][MAX_FILE], int const sR, int const sF, 
-                                           int const dR, int const dF);
 };
 
 

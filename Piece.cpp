@@ -22,6 +22,7 @@ PieceType Piece::getType(){
   return this->type;
 }
 
+// function checks for if the piece on the destination square is the same team
 bool Piece::isFriendlyFire(Piece* const square[][MAX_FILE], int sourceRank, 
   int sourceFile, int destRank, int destFile){
     // if the destination square isn't empty...
@@ -36,6 +37,8 @@ bool Piece::isFriendlyFire(Piece* const square[][MAX_FILE], int sourceRank,
     return false;
 }
 
+// following three functions check for if there is an obstruction between 
+// the source square (sR = sourceRank, etc.) and destination square
 bool Piece::hasHorizontalObstruction(Piece* const square[][MAX_FILE],
   int sR, int sF,
   int dR, int dF){

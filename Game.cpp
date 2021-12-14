@@ -26,12 +26,9 @@ void Game::resetTurn(){
     turn = White;
 }
 
-void Game::makeMove(Piece* square[][MAX_FILE], int const sR, int const sF, 
-                                               int const dR, int const dF){
-  square[dR][dF] = square[sR][sF];
-  square[sR][sF] = nullptr;
-}
-
+// pair of functions working together to make hypotheticial moves by use
+// of a reference to a pointer named temp, which keeps the history of the 
+// source tile ready for re-entry after checks for check
 void Game::makeTempMove(Piece* square[][MAX_FILE], Piece*& temp, int const sR, 
                         int const sF, int const dR, int const dF){
   temp = square[dR][dF];
@@ -81,6 +78,8 @@ bool Game::isInCheck(Piece* square[][MAX_FILE]) {
           // if that piece has a valid move which finds own king
           PieceType flag;
           if(square[i][j]->isValidMove(square, i, j, kR, kF, flag)){
+            // then we are in check. Toggle back to correct player's move and
+            // return true
             toggleTurn();
             return true;
           }
@@ -88,11 +87,18 @@ bool Game::isInCheck(Piece* square[][MAX_FILE]) {
       }
     }
   }
+  // if no pieces were able to access the king, we return false as we are not
+  // in check
   toggleTurn();
   return false;
 }
 
-
+// helper function for determining checkmate. Also makes use of the temp move
+// functions to see if we remain in check even after any hypothetical move is 
+// made. Despite not being the most efficient as it runs a lot of iterations, 
+// the function does account for: moving the king out of check, taking the 
+// attacking piece, and obstructing the checking line. In this way it is 
+// is comprehensive even if not efficent
 bool Game::isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF,
                                                      int dR, int dF){
   Piece* temp = nullptr;

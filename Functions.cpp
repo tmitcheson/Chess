@@ -23,6 +23,7 @@ string convertBack(int rank, int file){
   return output;
 }
 
+// checks that input is within chessboard boundaries
 bool isValidInput(int sR, int sF, int dR, int dF){
   int test[4];
   test[0] = sR;

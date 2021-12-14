@@ -12,7 +12,7 @@ using namespace std;
 King::King()
   : Piece(){
     type = king;
-  };
+   };
 
 bool King::isValidMove (Piece* const square[][MAX_FILE], int sR, int sF, int dR,
   int dF, PieceType& flag) {

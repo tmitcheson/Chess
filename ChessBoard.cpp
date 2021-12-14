@@ -26,6 +26,7 @@ ChessBoard::ChessBoard()
 // chess starting positions
 void ChessBoard::resetBoard(){
 
+  // white always starts a new game so
   game.resetTurn();
   // reset white starting positions
   // starting with pawns
@@ -64,7 +65,7 @@ void ChessBoard::resetBoard(){
       square[i][j]->setBlack();
     }
   }
-  // all middle squares
+  // all middle squares set to empty (or nullptr)
   for(int i = 2; i < 6; i++){
     for(int j = 0; j < MAX_RANK; j++){
       square[i][j] = nullptr;
@@ -96,11 +97,11 @@ void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
   else cout << endl;
 }
 
-
+// destination square pointer now points to where the source square did
+// the source square pointer points to nothing, signifying its emptiness
 void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
-  
 }
 
 
@@ -112,19 +113,19 @@ void ChessBoard::submitMove(const char* source, const char* dest){
   converter(source, sourceRank, sourceFile);
   converter(dest, destRank, destFile);
 
-  
+  // guards for valid input and return if error
   if(! (isValidInput(sourceRank, sourceFile, destRank, destFile))){
     cout << "Invalid input error. " << endl;
     return;
   }
 
-  // check for if there is a piece on that square
+  // check for if there is a piece on that square and return if error
   if(!hasPiece(sourceRank, sourceFile)){
     cerr << "There is no piece at position " << source[0] << source[1] << endl;
     return;
   }
 
-  // check if it is the correct colour's turn to move
+  // check if it is the correct colour's turn to move and return if error
   if(! (square[sourceRank][sourceFile]->getColour() == game.getTurn())){
     cerr << "It is not " << square[sourceRank][sourceFile]->getColour()
          << "'s turn to move. " << endl;
@@ -167,8 +168,6 @@ void ChessBoard::submitMove(const char* source, const char* dest){
     return;
   }
   game.undoTempMove(square, temp, sourceRank, sourceFile, destRank, destFile);
-  
-
 
   // after its validity is checked, the move can be made
   printMoveToMake(sourceRank, sourceFile, destRank, destFile);
@@ -177,11 +176,11 @@ void ChessBoard::submitMove(const char* source, const char* dest){
   // after move the turn is over
   game.toggleTurn();
 
+  // and now we check for whether the game is over i.e. whether someone
+  // is in checkmate or stalemate. If someone is in check but not checkmate
+  // then message is outputted but the game continues
   if(game.isGameOver(square)){
     return;
   }
 
 }
-
-
-
