@@ -29,15 +29,19 @@ class ChessBoard {
   King blackKing;
   Queen blackQueen;
 
+  bool hasPiece(int const rank, int const file);
+  void printMoveToMake(int const sourceRank, int const sourceFile, 
+                        int const destRank, int const destFile);
+  void makeMove(int const sourceRank, int const sourceFile, 
+                int const destRank, int const destFile);
+  bool isInCheck(Piece* square[][MAX_FILE]);
+  void identifyOppositionKing(Piece* square[][MAX_FILE], int& kR, int& kF);
+
 public:
   ChessBoard();
   void submitMove(const char* source, const char* dest);
   void resetBoard();
-  bool hasPiece(int rank, int file);
-  void printMoveToMake(int sourceRank, int sourceFile, int destRank, int destFile);
-  void makeMove(int sourceRank, int sourceFile, int destRank, int destFile);
-  bool isInCheck(Piece* square[][MAX_FILE]);
-  void identifyOppositionKing(Piece* square[][MAX_FILE], int& kR, int& kF);
+  
 
 };
 

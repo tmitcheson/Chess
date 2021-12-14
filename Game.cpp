@@ -18,7 +18,7 @@ void Game::toggleTurn(){
     turn = (turn == Black) ? White : Black;
 }
 
-Colour Game::getTurn(){
+Colour Game::getTurn() const{
     return this->turn;
 }
 
@@ -99,8 +99,8 @@ bool Game::isInCheck(Piece* square[][MAX_FILE]) {
 // the function does account for: moving the king out of check, taking the 
 // attacking piece, and obstructing the checking line. In this way it is 
 // is comprehensive even if not efficent
-bool Game::isStillInCheck(Piece* square[][MAX_FILE], int sR, int sF,
-                                                     int dR, int dF){
+bool Game::isStillInCheck(Piece* square[][MAX_FILE], int const sR, int const sF,
+                                                     int const dR, int const dF){
   Piece* temp = nullptr;
   makeTempMove(square, temp, sR, sF, dR, dF);
   if(! (isInCheck(square))){

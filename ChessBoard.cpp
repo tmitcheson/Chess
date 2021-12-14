@@ -76,7 +76,7 @@ void ChessBoard::resetBoard(){
 }
 
 
-bool ChessBoard::hasPiece(int rank, int file){
+bool ChessBoard::hasPiece(int const rank, int const file){
   if(square[rank][file] != nullptr){
     return true;
   }
@@ -84,7 +84,8 @@ bool ChessBoard::hasPiece(int rank, int file){
 }
 
 
-void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
+void ChessBoard::printMoveToMake(int const sR, int const sF, 
+                                  int const dR, int const dF){
   string outputSource = convertBack(sR, sF);
   string outputDest = convertBack(dR, dF);
   cout << square[sR][sF]->getColour() << "'s " << square[sR][sF]->getType()
@@ -99,7 +100,8 @@ void ChessBoard::printMoveToMake(int sR, int sF, int dR, int dF){
 
 // destination square pointer now points to where the source square did
 // the source square pointer points to nothing, signifying its emptiness
-void ChessBoard::makeMove(int sR, int sF, int dR, int dF){
+void ChessBoard::makeMove(int const sR, int const sF, 
+                            int const dR, int const dF){
   square[dR][dF] = square[sR][sF];
   square[sR][sF] = nullptr;
 }

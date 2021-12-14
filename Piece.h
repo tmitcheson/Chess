@@ -17,32 +17,34 @@ class Piece{
   Colour colour = White;
   PieceType type;
   bool movedYet;
+  bool isFriendlyFire(Piece* const square[][MAX_FILE], 
+                        int const sourceRank, 
+                        int const sourceFile, 
+                        int const destRank, 
+                        int const destFile);
+  
+  bool hasHorizontalObstruction(Piece* const square[][MAX_FILE],
+                              int const sR, int const sF,
+                              int const dR, int const dF);
+  bool hasVerticalObstruction(Piece* const square[][MAX_FILE],
+                              int const sR, int const sF,
+                              int const dR, int const dF);
+  bool hasDiagonalObstruction(Piece* const square[][MAX_FILE],
+                              int const sR, int const sF,
+                              int const dR, int const dF);
   
 public:
 
   Piece();
   void setBlack();
-  Colour getColour();
-  PieceType getType();
-  bool isFriendlyFire(Piece* const square[][MAX_FILE], 
-                        int sourceRank, 
-                        int sourceFile, 
-                        int destRank, 
-                        int destFile);
+  Colour getColour() const;
+  PieceType getType() const;
   virtual bool isValidMove(Piece* const square[][MAX_FILE], 
                             int sourceRank,
                             int sourceFile, 
                             int destRank,
                             int destFile, PieceType& flag) = 0;
-  bool hasHorizontalObstruction(Piece* const square[][MAX_FILE],
-                              int sR, int sF,
-                              int dR, int dF);
-  bool hasVerticalObstruction(Piece* const square[][MAX_FILE],
-                              int sR, int sF,
-                              int dR, int dF);
-  bool hasDiagonalObstruction(Piece* const square[][MAX_FILE],
-                              int sR, int sF,
-                              int dR, int dF);
+  
 
 
 };
